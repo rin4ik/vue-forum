@@ -24,16 +24,12 @@
 
 <script>
 import sourceData from '@/data'
-import AppDate from './AppDate'
 export default{
   props: {
     thread: {
       required: true,
       type: Object
     }
-  },
-  components: {
-    AppDate
   },
   computed: {
     repliesCount () {
