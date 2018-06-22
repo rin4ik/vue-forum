@@ -1,18 +1,18 @@
 <template>
   <div>
     <h1>Welcome to the forum</h1>
-    <ThreadList :threads="Object.values(threads)" />
+    <ForumList :forums="Object.values(forums)" />
   </div>
 </template>
 
 <script>
   import sourceData from '@/data'
-  import ThreadList from '@/components/ThreadList'
+  import ForumList from '@/components/ForumList'
   export default {
-    components: { ThreadList },
+    components: { ForumList },
     data () {
       return {
-        threads: Object.values(sourceData.threads),
+        forums: Object.values(sourceData.forums),
         posts: sourceData.posts,
         users: sourceData.users
       }
