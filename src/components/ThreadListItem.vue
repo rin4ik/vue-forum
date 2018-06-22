@@ -6,7 +6,8 @@
             </p>
             <p class="text-faded text-xsmall">
                 By
-                <a href="#">{{user.name}}</a>, {{thread.publishedAt}}.
+                <a href="#">{{user.name}}</a>,
+                <AppDate :timestamp="thread.publishedAt" />
             </p>
         </div>
 
@@ -23,6 +24,7 @@
 
 <script>
 import sourceData from '@/data'
+import AppDate from './AppDate'
 export default{
   props: {
     thread: {
@@ -30,7 +32,9 @@ export default{
       type: Object
     }
   },
-
+  components: {
+    AppDate
+  },
   computed: {
     repliesCount () {
       return Object.keys(this.thread.posts).length - 1
