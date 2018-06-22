@@ -8,7 +8,7 @@
             </a>
 
             <p class="desktop-only text-small">
-                {{userPostsCount}} posts
+                {{userPostsCount}} {{userPostsCount === 1 ? 'post' : 'posts'}}
             </p>
 
         </div>
@@ -24,7 +24,7 @@
     </div>
 </template>
 <script>
-  
+  import {countObjectProperties} from '@/utils'
   export default {
     props: {
       post: {
@@ -37,7 +37,7 @@
         return this.$store.state.users[this.post.userId]
       },
       userPostsCount () {
-        return Object.keys(this.user.posts).length
+        return countObjectProperties(this.user.posts)
       }
     }
   }
