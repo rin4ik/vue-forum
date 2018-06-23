@@ -28,6 +28,7 @@
         </div>
         <a @click.prevent="editing = true" v-if="!editing" href="#" style="margin-left: auto;" class="link-unstyled" title="Make a change"><i class="fa fa-pencil"></i></a>
         <div class="post-date text-faded">
+            <div v-if="post.edited" class="edition-info">edited</div>
             <AppDate :timestamp="post.publishedAt" />
         </div>
     </div>
