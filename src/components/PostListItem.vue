@@ -18,7 +18,11 @@
                 {{ post.text }}
             </div>
             <div v-else>
-              <PostEditor :post="post" @save="editing = false" />
+              <PostEditor 
+                :post="post" 
+                @save="editing = false" 
+                @cancel="editing = false"
+              />
             </div>
             
         </div>
