@@ -425,7 +425,6 @@ figcaption {
 }
 
 .post-content {
-    display: flex;
     flex: 1 0 83%;
     padding-left: 15px;
     padding-right: 10px;
