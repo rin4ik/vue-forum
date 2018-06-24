@@ -4,9 +4,6 @@
         >
        <img src="../assets/img/vueschool-logo.svg"> 
         </router-link>
-        <a href="index.html" class="logo">
-            <img >
-        </a>
 
         <div class="btn-hamburger">
             <!-- use .btn-humburger-active to open the menu -->
