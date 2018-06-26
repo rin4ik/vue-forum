@@ -88,6 +88,12 @@ export default new Vuex.Store({
     updateUser ({commit}, user) {
       commit('setUser', {userId: user['.key'], user})
     },
+    fetchCategory ({dispatch}, {id}) {
+      return dispatch('fetchItem', {resource: 'categories', id, emoji: '🙋'})
+    },
+    fetchForum ({dispatch}, {id}) {
+      return dispatch('fetchItem', {resource: 'forums', id, emoji: '🙋'})
+    },
     fetchThread ({dispatch}, {id}) {
       return dispatch('fetchItem', {resource: 'threads', id, emoji: '📄'})
     },
@@ -105,6 +111,15 @@ export default new Vuex.Store({
     fetchForums ({dispatch}, {ids}) {
       return dispatch('fetchItems', {resource: 'forums', emoji: 'chat', ids})
     },
+    fetchThreads ({dispatch}, {ids}) {
+      return dispatch('fetchItems', {resource: 'threads', emoji: 'chat', ids})
+    },
+    fetchCategories ({dispatch}, {ids}) {
+      return dispatch('fetchItems', {resource: 'categories', emoji: 'chat', ids})
+    },
+    fetchUsers ({dispatch}, {ids}) {
+      return dispatch('fetchItems', {resource: 'users', emoji: 'chat', ids})
+    },
     fetchItem ({state, commit}, {id, emoji, resource}) {
       console.log('🔥‍', emoji, id)
       return new Promise((resolve, reject) => {
@@ -115,10 +130,10 @@ export default new Vuex.Store({
       })
     },
     fetchItems ({dispatch}, {ids, resource, emoji}) {
+      ids = Array.isArray(ids) ? ids : Object.keys(ids)
       return Promise.all(ids.map(id => dispatch('fetchItem', {id, resource, emoji})))
     },
     fetchAllCategories ({state, commit}) {
-      console.log('category00')
       return new Promise((resolve, reject) => {
         firebase.database().ref('categories').once('value', snapshot => {
           const categoriesObject = snapshot.val()
