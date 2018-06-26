@@ -24,7 +24,6 @@
   
   import PostList from '@/components/PostList'
   import PostEditor from '@/components/PostEditor'
-  import firebase from 'firebase'
   import { countObjectProperties } from '@/utils'
   export default {
     components: {
@@ -59,26 +58,15 @@
     },
     created () {
       // fetch thread
-      firebase.database().ref('threads').child(this.id).once('value', snapshot => {
-        const thread = snapshot.val()
-        this.$store.commit('setThread', {threadId: snapshot.key, thread: {...thread, '.key': snapshot.key}})
-      // fetch user
-        firebase.database().ref('users').child(thread.userId).once('value', snapshot => {
-          const user = snapshot.val()
-          this.$store.commit('setUser', {user: {...user, '.key': snapshot.key}, userId: snapshot.key})
-        })
-        Object.keys(thread.posts).forEach(postId => {
-          firebase.database().ref('posts').child(postId).once('value', snapshot => {
-            const post = snapshot.val()
-            this.$store.commit('setPost', {post: {...post, '.key': snapshot.key}, postId: snapshot.key})
-
-            firebase.database().ref('users').child(post.userId).once('value', snapshot => {
-              const user = snapshot.val()
-              this.$store.commit('setUser', {user: {...user, '.key': snapshot.key}, userId: snapshot.key})
+      this.$store.dispatch('fetchItem', {id: this.id, resource: 'threads'})
+        .then(thread => {
+          this.$store.dispatch('fetchItem', {id: thread.userId, resource: 'users'})
+          Object.keys(thread.posts).forEach(postId => {
+            this.$store.dispatch('fetchItem', {id: postId, resource: 'posts'}).then(post => {
+              this.$store.dispatch('fetchItem', {id: post.userId, resource: 'users'})
             })
           })
         })
-      })
     }
   }
 </script>

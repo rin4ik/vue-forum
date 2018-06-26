@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { countObjectProperties } from '@/utils'
+import firebase from 'firebase'
 Vue.use(Vuex)
 const makeAppendChildToParentMutation = ({parent, child}) =>
 (state, {childId, parentId}) => {
@@ -86,17 +87,20 @@ export default new Vuex.Store({
     },
     updateUser ({commit}, user) {
       commit('setUser', {userId: user['.key'], user})
+    },
+    fetchItem ({state, commit}, {id, resource}) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref(resource).child(id).once('value', snapshot => {
+          commit('setItem', {resource, id: snapshot.key, item: snapshot.val()})
+          resolve(state[resource][id])
+        })
+      })
     }
   },
   mutations: {
-    setPost (state, {post, postId}) {
-      Vue.set(state.posts, postId, post)
-    },
-    setUser (state, {user, userId}) {
-      Vue.set(state.users, userId, user)
-    },
-    setThread (state, {thread, threadId}) {
-      Vue.set(state.threads, threadId, thread)
+    setItem (state, {item, id, resource}) {
+      item['.key'] = id
+      Vue.set(state[resource], id, item)
     },
     appendPostToThread: makeAppendChildToParentMutation({parent: 'threads', child: 'posts'}),
     appendPostToUser: makeAppendChildToParentMutation({parent: 'users', child: 'posts'}),
