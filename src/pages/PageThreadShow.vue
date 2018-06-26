@@ -58,14 +58,16 @@
     },
     created () {
       // fetch thread
-      this.$store.dispatch('fetchItem', {id: this.id, resource: 'threads'})
+      this.$store.dispatch('fetchThread', {id: this.id})
         .then(thread => {
-          this.$store.dispatch('fetchItem', {id: thread.userId, resource: 'users'})
-          Object.keys(thread.posts).forEach(postId => {
-            this.$store.dispatch('fetchItem', {id: postId, resource: 'posts'}).then(post => {
-              this.$store.dispatch('fetchItem', {id: post.userId, resource: 'users'})
+          // fetch user
+          this.$store.dispatch('fetchUser', {id: thread.userId})
+          this.$store.dispatch('fetchPosts', {ids: Object.keys(thread.posts)})
+            .then(posts => {
+              posts.forEach(post => {
+                this.$store.dispatch('fetchUser', {id: post.userId})
+              })
             })
-          })
         })
     }
   }

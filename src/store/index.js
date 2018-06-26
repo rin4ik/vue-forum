@@ -88,13 +88,31 @@ export default new Vuex.Store({
     updateUser ({commit}, user) {
       commit('setUser', {userId: user['.key'], user})
     },
-    fetchItem ({state, commit}, {id, resource}) {
+    fetchThread ({dispatch}, {id}) {
+      return dispatch('fetchItem', {resource: 'threads', id, emoji: '📄'})
+    },
+
+    fetchUser ({dispatch}, {id}) {
+      return dispatch('fetchItem', {resource: 'users', id, emoji: '🙋'})
+    },
+
+    fetchPost ({dispatch}, {id}) {
+      return dispatch('fetchItem', {resource: 'posts', id, emoji: '💬'})
+    },
+    fetchPosts ({dispatch}, {ids}) {
+      return dispatch('fetchItems', {resource: 'posts', emoji: 'chat', ids})
+    },
+    fetchItem ({state, commit}, {id, emoji, resource}) {
+      console.log('🔥‍', emoji, id)
       return new Promise((resolve, reject) => {
         firebase.database().ref(resource).child(id).once('value', snapshot => {
           commit('setItem', {resource, id: snapshot.key, item: snapshot.val()})
           resolve(state[resource][id])
         })
       })
+    },
+    fetchItems ({dispatch}, {ids, resource, emoji}) {
+      return Promise.all(ids.map(id => dispatch('fetchItem', {id, resource, emoji})))
     }
   },
   mutations: {
