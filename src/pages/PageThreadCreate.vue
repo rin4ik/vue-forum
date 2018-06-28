@@ -7,17 +7,22 @@
       </div>
 </template>
 <script>
+    import {mapActions} from 'vuex'
     import ThreadEditor from '@/components/ThreadEditor'
-    import { mapActions } from 'vuex'
     export default {
+      components: {
+        ThreadEditor
+      },
       props: {
         forumId: {
           type: String,
           required: true
         }
       },
-      components: {
-        ThreadEditor
+      computed: {
+        forum () {
+          return this.$store.state.forums[this.forumId]
+        }
       },
       methods: {
         ...mapActions(['createThread', 'fetchForum']),
@@ -32,11 +37,6 @@
         },
         cancel () {
           this.$router.push({name: 'Forum', params: {id: this.forum['.key']}})
-        }
-      },
-      computed: {
-        forum () {
-          return this.$store.state.forums[this.forumId]
         }
       },
       created () {
