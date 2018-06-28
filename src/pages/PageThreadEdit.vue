@@ -25,7 +25,7 @@
         ThreadEditor
       },
       methods: {
-        ...mapActions('updateThread', 'fetchThread', 'fetchPost'),
+        ...mapActions(['updateThread', 'fetchThread', 'fetchPost']),
         save ({title, text}) {
           this.updateThread({
             id: this.id,
