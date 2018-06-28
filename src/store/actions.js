@@ -47,19 +47,32 @@ export default {
   },
   createThread ({commit, state, dispatch}, {text, title, forumId}) {
     return new Promise((resolve, reject) => {
-      const threadId = 'greatThread' + Math.random()
+      const postId = firebase.database().ref('posts').push().key
+      const threadId = firebase.database().ref('threads').key
       const userId = state.authId
       const publishedAt = Math.floor(Date.now() / 1000)
-      const thread = {'.key': threadId, forumId, title, publishedAt, userId}
-      commit('setThread', {threadId, thread})
-      commit('appendThreadToForum', {parentId: forumId, childId: threadId})
-      commit('appendThreadToUser', {parentId: userId, childId: threadId})
+      const thread = {forumId, title, publishedAt, userId, firstPostId: postId, posts: {}}
+      const post = {text, publishedAt, threadId, userId}
+      thread.posts[postId] = postId
+      const updates = {}
+      updates[`threads/${threadId}`] = thread
+      updates[`forums/${forumId}/threads/${threadId}`] = threadId
+      updates[`users/${userId}/thread/${threadId}`] = threadId
 
-      dispatch('createPost', {text, threadId})
-        .then(post => {
-          commit('setThread', {threadId, thread: {...thread, firstPostId: post['.key']}})
+      updates[`posts/${postId}`] = post
+      updates[`users/${userId}/posts/${postId}`] = postId
+      firebase.database().ref().update(updates)
+        .then(() => {
+          // update thread
+          commit('setItem', {resource: 'threads', id: threadId, item: thread})
+          commit('appendThreadToForum', {parentId: forumId, childId: threadId})
+          commit('appendThreadToUser', {parentId: userId, childId: threadId})
+          // update post
+          commit('setItem', {resource: 'posts', item: post, id: postId})
+          commit('appendPostToThread', {parentId: post.threadId, childId: postId})
+          commit('appendPostToUser', {parentId: post.userId, childId: postId})
+          resolve(state.threads[threadId])
         })
-      resolve(state.threads[threadId])
     })
   },
   updateUser ({commit}, user) {
