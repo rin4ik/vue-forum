@@ -29,11 +29,15 @@
     import UserProfileCard from '@/components/UserProfileCard'
     import UserProfileCardEditor from '@/components/UserProfileCardEditor'
     import {mapGetters} from 'vuex'
+    
     export default {
       components: {
         PostList,
         UserProfileCard,
         UserProfileCardEditor
+      },
+      created () {
+        this.$emit('ready')
       },
       props: {
         edit: {
