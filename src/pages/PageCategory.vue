@@ -27,7 +27,7 @@
       }
     },
     methods: {
-      ...mapActions(['fetchCategory', 'fetchForum'])
+      ...mapActions(['fetchCategory', 'fetchForums'])
     },
     created () {
       this.fetchCategory({id: this.id})
